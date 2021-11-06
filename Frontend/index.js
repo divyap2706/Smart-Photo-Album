@@ -1,4 +1,5 @@
 var name = '';
+var file = null;
 var encoded = null;
 var fileExt = null;
 window.SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
@@ -13,10 +14,12 @@ function previewFile(input) {
   var onlyname = name.replace(/\.[^/.]+$/, "");
   var finalName = onlyname + "_" + Date.now() + "." + fileExt;
   name = finalName;
+  file = input.files[0];
 
   reader.onload = function (e) {
     var src = e.target.result;
     var newImage = document.createElement("img");
+    file = src;
     newImage.src = src;
     encoded = newImage.outerHTML;
   }
@@ -31,18 +34,19 @@ function upload() {
   else {
     encodedStr = encoded.substring(32, last_index_quote);
   }
+
   var apigClient = apigClientFactory.newClient({ apiKey: "apikey" });
 
   var params = {
     "key": name,
-    "bucket": "photosb2",
-    "Content-Type": "image/jpg;base64"
+    "bucket": "photo-album-db",
+    "Content-Type": file.type+";base64"
 
   };
 
   var additionalParams = {
     headers: {
-      "Content-Type": "image/jpg;base64"
+      "Content-Type": file.type+";base64"
     }
   };
 
@@ -54,6 +58,7 @@ function upload() {
     }).catch(function (result) {
       console.log(result);
     });
+  
 }
 
 function searchFromVoice() {
@@ -107,11 +112,11 @@ function search() {
     }
   };
   console.log(searchTerm);
-  apigClient.searchGet(params, body, additionalParams)
+  apigClient.searchGet({q:searchTerm},{},{})
     .then(function (result) {
       console.log('success OK');
       console.log(result)
-      showImages(result.data.results);
+      showImages(result.data);
     }).catch(function (result) {
       console.log(result);
     });
@@ -136,11 +141,12 @@ function showImages(res) {
       console.log(res[i]);
       var newDiv = document.getElementById("div");
       newDiv.style.display = 'inline'
-      var newContent = document.createElement("img");
-      newContent.src = res[i];
-      // newContent.style.padding = "20px";
-      // newContent.style.height = "200px";
-      // newContent.style.width = "200px";
+      //var newContent = document.createElement("img");
+      var newContent = new Image();
+      newContent.src = "https://s3.amazonaws.com/"+res[i]['bucket']+"/"+res[i]['objectKey'];
+      newContent.style.padding = "20px";
+      newContent.style.height = "200px";
+      newContent.style.width = "200px";
       newDiv.appendChild(newContent);
       var currentDiv = document.getElementById("div1");
       document.body.insertBefore(newDiv, currentDiv);
