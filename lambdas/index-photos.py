@@ -43,24 +43,29 @@ def get_customLabel(bucketName, photoName):
         localeId='en_US'
     )
     labels = set([_['sampleValue']['value'] for _ in response['slotTypeValues']])
+    N = len(labels)
     labels = labels | set(customLabels)
-    labels = [{'sampleValue': {'value': l}} for l in labels]
-    response = client.update_slot_type(
-        slotTypeId='GIXF9DKUYR',
-        slotTypeName='keyWords',
-        slotTypeValues=labels,
-        valueSelectionSetting={
-            'resolutionStrategy': 'OriginalValue'
-        },
-        botId='8D4R2DLNY2',
-        botVersion='DRAFT',
-        localeId='en_US'
-    )
-    response = client.build_bot_locale(
-        botId='8D4R2DLNY2',
-        botVersion='DRAFT',
-        localeId='en_US'
-    )
+    if len(labels) != N:
+        labels = [{'sampleValue': {'value': l}} for l in labels]
+        response = client.update_slot_type(
+            slotTypeId='GIXF9DKUYR',
+            slotTypeName='keyWords',
+            slotTypeValues=labels,
+            valueSelectionSetting={
+                'resolutionStrategy': 'OriginalValue'
+            },
+            botId='8D4R2DLNY2',
+            botVersion='DRAFT',
+            localeId='en_US'
+        )
+        try:
+            response = client.build_bot_locale(
+                botId='8D4R2DLNY2',
+                botVersion='DRAFT',
+                localeId='en_US'
+            )
+        except: 
+            pass    
     return customLabels
     
 def uploadES(bucketName, photoName, labels):
