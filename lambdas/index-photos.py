@@ -34,7 +34,7 @@ def get_customLabel(bucketName, photoName):
             return 
     except:
         return
-    labels = [{'sampleValue': {'value': l}} for l in customLabels]
+    
     client = boto3.client('lexv2-models')
     response = client.describe_slot_type(
         slotTypeId='GIXF9DKUYR',
@@ -42,7 +42,9 @@ def get_customLabel(bucketName, photoName):
         botVersion='DRAFT',
         localeId='en_US'
     )
-    labels = labels + response['slotTypeValues']
+    labels = set([_['sampleValue']['value'] for _ in response['slotTypeValues']])
+    labels = labels | set(customLabels)
+    labels = [{'sampleValue': {'value': l}} for l in labels]
     response = client.update_slot_type(
         slotTypeId='GIXF9DKUYR',
         slotTypeName='keyWords',
@@ -54,7 +56,11 @@ def get_customLabel(bucketName, photoName):
         botVersion='DRAFT',
         localeId='en_US'
     )
-    
+    response = client.build_bot_locale(
+        botId='8D4R2DLNY2',
+        botVersion='DRAFT',
+        localeId='en_US'
+    )
     return customLabels
     
 def uploadES(bucketName, photoName, labels):
