@@ -6,7 +6,7 @@ from requests_aws4auth import AWS4Auth
 
 region = 'us-east-1'
 service = 'es'
-URL = "https://search-photos-gv3dffs4hvpuyc6i5am4xfxm5i.us-east-1.es.amazonaws.com/photos/_search"
+URL = "https://search-photoalbumlabel-45itzrcuelgpzinxak4xrjjtou.us-east-1.es.amazonaws.com/_search"
 credentials = boto3.Session().get_credentials()
 awsauth = AWS4Auth(credentials.access_key, credentials.secret_key, region, service, session_token=credentials.token)
 

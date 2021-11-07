@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="stylesheet" type="text/css" href="uploadImage.css"></style>
+  <link rel="stylesheet" type="text/css" href="uploadimage.css"></style>
   <script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
   <script src="https://sdk.amazonaws.com/js/aws-sdk-2.179.0.min.js"></script>
   <script type="text/javascript" src="lib/axios/dist/axios.standalone.js"></script>
@@ -20,6 +20,8 @@
 <body>
   <div id = "dropz"  class="zone">
   <p align="center"><input type="file" class = "fa fa-cloud-upload" onchange="previewFile(this);" accept="image/*"></p><br><br>
+  <p> Enter Custom Labels below, separate with comma, e.g. Sam, Divya, Hank
+  <input id='custom_labels' class="fa fa-cloud-upload" type='text' placeholder = "Enter custom labels"></input><br><br>
   <button class="mybtn" onclick="upload()">Upload</button><br><br>
   </div>
   <div class="row">

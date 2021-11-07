@@ -9,21 +9,16 @@ const icon = document.querySelector('i.fa.fa-microphone')
 
 function previewFile(input) {
   var reader = new FileReader();
-  name = input.files[0].name;
-  fileExt = name.split(".").pop();
-  var onlyname = name.replace(/\.[^/.]+$/, "");
-  var finalName = onlyname + "_" + Date.now() + "." + fileExt;
-  name = finalName;
   file = input.files[0];
-
+  name = file.name;
+  fileExt = name.split(".")[1];
   reader.onload = function (e) {
     var src = e.target.result;
     var newImage = document.createElement("img");
-    file = src;
     newImage.src = src;
     encoded = newImage.outerHTML;
   }
-  reader.readAsDataURL(input.files[0]);
+  reader.readAsDataURL(file);
 }
 
 function upload() {
@@ -36,17 +31,18 @@ function upload() {
   }
 
   var apigClient = apigClientFactory.newClient({ apiKey: "apikey" });
-
+  var labels = document.getElementById("custom_labels").value;
   var params = {
     "key": name,
     "bucket": "photo-album-db",
-    "Content-Type": file.type+";base64"
-
+    "Content-Type": file.type+";base64",
+    "x-amz-meta-customLabels": labels,
   };
 
   var additionalParams = {
     headers: {
-      "Content-Type": file.type+";base64"
+      "Content-Type": file.type+";base64",
+      "x-amz-meta-customLabels": labels,
     }
   };
 
